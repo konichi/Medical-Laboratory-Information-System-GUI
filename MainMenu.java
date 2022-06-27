@@ -3,54 +3,54 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MainMenu {
+public class MainMenu implements ActionListener {
     private JFrame frame;
     private JPanel panel;
+    private JLabel selectLabel;
+    private JButton patientsButton;
+    private JButton servicesButton;
+    private JButton labButton;
 
     public void mainMenu() {
         frame = new JFrame();
         panel = new JPanel();
 
-        frame.add(panel, BorderLayout.LINE_START);
         frame.setSize(960, 540);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Medical Laboratory System");
-        frame.add(panel);
+        frame.add(panel, BorderLayout.LINE_START);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        panel.setLayout(null);
-
-        JLabel patientsLabel = new JLabel("[1] Manage Patient Records");
-        patientsLabel.setBounds(10, 10, 500, 25);
-        panel.add(patientsLabel);
-
-        JLabel servicesLabel = new JLabel("[2] Manage Services");
-        servicesLabel.setBounds(10, 30, 500, 25);
-        panel.add(servicesLabel);
-
-        JLabel labLabel = new JLabel("[3] Manage Laboratory Results");
-        labLabel.setBounds(10, 50, 500, 25);
-        panel.add(labLabel);
-
-        JLabel selectLabel = new JLabel("Select a transaction: ");
-        selectLabel.setBounds(10, 80, 500, 25);
+        selectLabel = new JLabel("Select a transaction: ");
+        selectLabel.setBounds(10, 10, 250, 25);
         panel.add(selectLabel);
 
-        JTextField selectText = new JTextField(20);
-        selectText.setBounds(140, 80, 160, 25);
-        selectText.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String input = selectText.getText();
-                frame.dispose();
-                switch (input) {
-                    case "1" -> managePatientRecords();
-                    case "2" -> manageServices();
-                    case "3" -> manageLaboratoryRequest();
-                    default -> mainMenu();
-                }
-            }
-        });
-        panel.add(selectText);
+        patientsButton = new JButton("Manage Patient Records");
+        patientsButton.setBounds(10, 30, 250, 25);
+        patientsButton.addActionListener(this);
+        panel.add(patientsButton);
+
+        servicesButton = new JButton("Manage Services");
+        servicesButton.setBounds(10, 50, 250, 25);
+        servicesButton.addActionListener(this);
+        panel.add(servicesButton);
+
+        labButton = new JButton("Manage Laboratory Results");
+        labButton.setBounds(10, 70, 250, 25);
+        labButton.addActionListener(this);
+        panel.add(labButton);
+
         frame.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        frame.dispose();
+        if (e.getSource() == patientsButton)
+            managePatientRecords();
+        else if (e.getSource() == servicesButton)
+            manageServices();
+        else if (e.getSource() == labButton)
+            manageLaboratoryRequest();
     }
 
     public void managePatientRecords() {

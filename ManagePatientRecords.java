@@ -7,8 +7,7 @@
 *   and editing a patient record.
 * */
 
-import com.toedter.calendar.JDateChooser;
-
+import javax.swing.Timer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -200,8 +199,6 @@ public class ManagePatientRecords implements ActionListener {
         mm = new MainMenu();
         Scanner scanner = new Scanner(System.in);
 
-        String patientCodeIdentifier = generateUID();
-
         frame = new JFrame();
         panel = new JPanel();
 
@@ -239,27 +236,31 @@ public class ManagePatientRecords implements ActionListener {
         birthdayLabel.setBounds(10, 100, 80, 20);
         panel.add(birthdayLabel);
 
-        JDateChooser birthday = new JDateChooser();
-        birthday.setLocale(Locale.US);
-        panel.add(birthday);
+        JTextField birthdayText = new JTextField();
+        birthdayText.setBounds(100, 100, 250, 25);
+        panel.add(birthdayText);
+
+//        JDateChooser birthday = new JDateChooser();
+//        birthday.setLocale(Locale.US);
+//        panel.add(birthday);
 
         JLabel genderLabel = new JLabel("Gender: ");
         genderLabel.setBounds(10, 130, 80, 20);
         panel.add(genderLabel);
 
-        JRadioButton female = new JRadioButton();
-        female.setText("Female");
-        female.setBounds(100, 130, 100, 25);
-        panel.add(female);
+        JRadioButton femaleButton = new JRadioButton();
+        femaleButton.setText("Female");
+        femaleButton.setBounds(100, 130, 100, 25);
+        panel.add(femaleButton);
 
-        JRadioButton male = new JRadioButton();
-        male.setText("Male");
-        male.setBounds(200, 130, 250, 25);
-        panel.add(male);
+        JRadioButton maleButton = new JRadioButton();
+        maleButton.setText("Male");
+        maleButton.setBounds(200, 130, 250, 25);
+        panel.add(maleButton);
 
         ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add(female);
-        buttonGroup.add(male);
+        buttonGroup.add(femaleButton);
+        buttonGroup.add(maleButton);
 
         JLabel addressLabel = new JLabel("Address: ");
         addressLabel.setBounds(10, 160, 80, 20);
@@ -315,53 +316,160 @@ public class ManagePatientRecords implements ActionListener {
 
         JButton yesButton = new JButton("YES");
         yesButton.setBounds(10, 300, 80, 25);
+        yesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                // add input validation
+                String patientCodeIdentifier = generateUID();
+                String firstName = firstNameText.getText();
+                String lastName = lastNameText.getText();
+                String middleName = middleNameText.getText();
+                String birthday = birthdayText.getText();
+                String gender = null;
+                if (femaleButton.isSelected())
+                    gender = "F";
+                else if (maleButton.isSelected())
+                    gender = "M";
+                String address = addressText.getText();
+                String phoneNo = phoneNoText.getText();
+                long nationalIdNo = Long.parseLong(nationalIdText.getText());
+
+                Patient patient = new Patient(patientCodeIdentifier, lastName, firstName, middleName, birthday, gender, address, phoneNo, nationalIdNo);
+                patients.add(patient);
+
+                String filename = "Patients.txt";
+                int error = wtf.writeToPatients(filename, patient);
+                if (error == 1) {
+                    frame = new JFrame();
+                    panel = new JPanel();
+
+                    frame.setSize(960, 540);
+                    frame.setTitle("Error Message");
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                    panel.setLayout(new BorderLayout());
+
+                    JLabel errorLabel = new JLabel("Error occurred. Please try again.");
+                    errorLabel.setBounds(10, 10, 250, 25);
+                    errorLabel.setForeground(Color.RED);
+                    panel.add(errorLabel);
+
+                    Timer timer = new Timer(5000, null);
+                    timer.setRepeats(false);
+                    timer.start();
+
+                    frame.dispose();
+                    addNewPatient();
+                }
+
+                frame.dispose();
+
+                frame = new JFrame();
+                panel = new JPanel();
+
+                frame.setSize(960, 540);
+                frame.setTitle("Add New Patient");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+                panel.setLayout(boxLayout);
+                panel.setBorder(new EmptyBorder(new Insets(10, 10, 100, 10)));
+
+                JLabel messageDialogue = new JLabel("Patient record successfully added.");
+                messageDialogue.setBounds(10, 10, 250, 25);
+                messageDialogue.setForeground(Color.BLUE);
+                panel.add(messageDialogue);
+
+                JLabel addOrReturnLabel = new JLabel("Would you like to add another patient or return to the main menu?");
+                addOrReturnLabel.setBounds(10, 10, 250, 25);
+                panel.add(addOrReturnLabel);
+
+                JButton addNewButton = new JButton("Add New Patient");
+                addNewButton.setBounds(10, 30, 80, 25);
+                addNewButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        frame.dispose();
+                        addNewPatient();
+                    }
+                });
+                panel.add(addNewButton);
+
+                JButton returnButton = new JButton("Return to the Main Menu");
+                returnButton.setBounds(100, 30, 80, 25);
+                returnButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        frame.dispose();
+                        mm.mainMenu();
+                    }
+                });
+                panel.add(returnButton);
+
+                frame.add(panel);
+                frame.setVisible(true);
+            }
+        });
         panel.add(yesButton);
 
         JButton noButton = new JButton("NO");
         noButton.setBounds(100, 300, 80, 25);
+        noButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+
+                frame = new JFrame();
+                panel = new JPanel();
+
+                frame.setSize(960, 540);
+                frame.setTitle("Patient Records");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+                panel.setLayout(boxLayout);
+                panel.setBorder(new EmptyBorder(new Insets(10, 10, 100, 10)));
+
+                JLabel messageDialogue = new JLabel("Patient record not added.");
+                messageDialogue.setBounds(10, 10, 250, 25);
+                messageDialogue.setForeground(Color.RED);
+                panel.add(messageDialogue);
+
+                JLabel addOrReturnLabel = new JLabel("Would you like to add another patient or return to the main menu?");
+                addOrReturnLabel.setBounds(10, 50, 250, 25);
+                panel.add(addOrReturnLabel);
+
+                JButton addNewButton = new JButton("Add New Patient");
+                addNewButton.setBounds(10, 80, 80, 25);
+                addNewButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        frame.dispose();
+                        addNewPatient();
+                    }
+                });
+                panel.add(addNewButton);
+
+                JButton returnButton = new JButton("Return to the Main Menu");
+                returnButton.setBounds(100, 80, 80, 25);
+                returnButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        frame.dispose();
+                        mm.mainMenu();
+                    }
+                });
+                panel.add(returnButton);
+
+                frame.add(panel);
+                frame.setVisible(true);
+            }
+        });
         panel.add(noButton);
 
         frame.add(panel);
         frame.setVisible(true);
-
-//        String savePatientRecord;
-//        do {
-//            System.out.print("Save Patient Record?[Y/N]: ");
-//            savePatientRecord = scanner.next().toUpperCase();
-//
-//            if(!savePatientRecord.equals("Y") && !savePatientRecord.equals("N"))
-//                System.out.println("Invalid input! Please enter a valid input.");
-//        } while(!savePatientRecord.equals("Y") && !savePatientRecord.equals("N"));
-//
-//        Patient patient = new Patient(patientCodeIdentifier, lastName, firstName, middleName, birthday, gender, address, phoneNo, nationalIdNo);
-//        patients.add(patient);
-//
-//        String input;
-//        if(savePatientRecord.equals("Y")) {
-//            String fileName = "Patients.txt";
-//            int error = wtf.writeToPatients(fileName, patient);
-//            if(error == 1)
-//                addNewPatient();
-//            System.out.println("Successfully added patient record!");
-//        }
-//        else
-//            System.out.println("Patient record not added.");
-//
-//        System.out.println();
-//        do {
-//            System.out.println("Would you like to add another patient or return to the main menu?");
-//            System.out.println("[1] Add new patient");
-//            System.out.println("[2] Return to the Main Menu");
-//            System.out.print("Select a transaction: ");
-//            input = scanner.next().toUpperCase();
-//            System.out.println();
-//            if(!input.equals("1") && !input.equals("2"))
-//                System.out.println("Invalid input! Please enter a valid input.");
-//        } while(!input.equals("1") && !input.equals("2"));
-//        if(input.equals("1"))
-//            addNewPatient();
-//        else
-//            mm.mainMenu();
     }
 
 //    searches for a patient record
@@ -484,12 +592,12 @@ public class ManagePatientRecords implements ActionListener {
                 int age = (int) ChronoUnit.YEARS.between(start, end);
 
                 //print pdf here
-//                String pdfName = patients[line][1] + "_" + sUID + "_" + rDate + ".pdf";
-//                try {
-//                    PrintLabResults.printPdf(pdfName, name, sUID, pUID, rDate, birthday, gender, phoneNo, age, test, result);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+                String pdfName = patients[line][1] + "_" + sUID + "_" + rDate + ".pdf";
+                try {
+                    PrintLabResults.printPdf(pdfName, name, sUID, pUID, rDate, birthday, gender, phoneNo, age, test, result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else if(input.equals("N"))
                 mm.mainMenu();
             else {

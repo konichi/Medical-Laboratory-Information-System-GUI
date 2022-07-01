@@ -7,6 +7,8 @@
 *   and editing a patient record.
 * */
 
+import com.toedter.calendar.JDateChooser;
+
 import javax.swing.Timer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -20,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -235,13 +238,12 @@ public class ManagePatientRecords implements ActionListener {
         birthdayLabel.setBounds(10, 100, 80, 20);
         panel.add(birthdayLabel);
 
-        JTextField birthdayText = new JTextField();
-        birthdayText.setBounds(100, 100, 250, 25);
-        panel.add(birthdayText);
-
-//        JDateChooser birthday = new JDateChooser();
-//        birthday.setLocale(Locale.US);
-//        panel.add(birthday);
+        JDateChooser dateChooser = new JDateChooser();
+        dateChooser.setBounds(100, 100, 250, 25);
+        dateChooser.setDateFormatString("yyyyMMdd");
+//        String tempBirthday = ((JTextField)dateChooser.getDateEditor().getUiComponent()).getText();
+        frame.getContentPane().add(dateChooser);
+        panel.add(dateChooser);
 
         JLabel genderLabel = new JLabel("Gender: ");
         genderLabel.setBounds(10, 130, 80, 20);
@@ -327,7 +329,10 @@ public class ManagePatientRecords implements ActionListener {
                 String firstName = firstNameText.getText();
                 String lastName = lastNameText.getText();
                 String middleName = middleNameText.getText();
-                String birthday = birthdayText.getText();
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                String birthday = dateFormat.format(dateChooser.getDate());
+
                 String gender = null;
                 if (femaleButton.isSelected())
                     gender = "F";
@@ -479,7 +484,6 @@ public class ManagePatientRecords implements ActionListener {
         mlr = new ManageLaboratoryRequest();
         rf = new ReadFile();
         mm = new MainMenu();
-        Scanner scanner = new Scanner(System.in);
 
         int line=searchRecord();
         String input;
@@ -1102,7 +1106,6 @@ public class ManagePatientRecords implements ActionListener {
         String fileName = "Patients.txt";
         int error = rf.readPatients(fileName);
         if(error==1) {
-            frame.dispose();
             frame = new JFrame();
             panel = new JPanel();
 
@@ -1117,8 +1120,14 @@ public class ManagePatientRecords implements ActionListener {
             errorMessage.setForeground(Color.RED);
             panel.add(errorMessage);
 
+            Timer timer = new Timer(5000, null);
+            timer.setRepeats(false);
+            timer.start();
+
             frame.add(panel);
             frame.setVisible(true);
+
+            frame.dispose();
             return -1;
         }
         String[][] patients = rf.getTempSearch();
@@ -1139,6 +1148,9 @@ public class ManagePatientRecords implements ActionListener {
         frame.setSize(960, 540);
         frame.setTitle("Searching Records");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.add(panel);
+        frame.setVisible(true);
 
         BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
         panel.setLayout(boxLayout);
@@ -1197,6 +1209,9 @@ public class ManagePatientRecords implements ActionListener {
             }
         });
         panel.add(yesUIDButton);
+
+        frame.add(panel);
+        frame.setVisible(true);
 
         JButton noUIDButton = new JButton("NO");
         noUIDButton.setBounds(100, 40, 80, 25);
@@ -1269,6 +1284,9 @@ public class ManagePatientRecords implements ActionListener {
                     }
                 });
                 panel.add(yesIDButton);
+
+                frame.add(panel);
+                frame.setVisible(true);
 
                 JButton noIDButton = new JButton("NO");
                 noIDButton.setBounds(100, 40, 80, 25);

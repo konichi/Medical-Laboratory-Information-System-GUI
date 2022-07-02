@@ -1,0 +1,4 @@
+CAT;Covid-19 Antigen Test;1000;
+CBT;Covid-19 Antibody Test;500;
+CRP;Covid-19 RT-PCR;2000;
+BLD;Blood Test;800;

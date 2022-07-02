@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="288.0" prefWidth="320.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.medicallaboratorysystem.controllers.ManagePatientRecordsController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="34.0" prefHeight="18.0" prefWidth="186.0" text="Manage Patient Records" textAlignment="CENTER" />
+      <VBox layoutX="66.0" layoutY="75.0" prefHeight="80.0" prefWidth="186.0" spacing="10.0" AnchorPane.bottomAnchor="67.4">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onAddPatientClick" prefHeight="26.0" prefWidth="186.0" text="Add New Patient" />
+            <Button mnemonicParsing="false" onAction="#onEditRecordClick" prefHeight="26.0" prefWidth="186.0" text="Edit Patient Record" />
+            <Button mnemonicParsing="false" onAction="#onDeleteRecordClick" prefHeight="26.0" prefWidth="186.0" text="Delete Patient Record" />
+            <Button mnemonicParsing="false" onAction="#onSearchPatientRecordClick" prefHeight="26.0" prefWidth="186.0" text="Search Patient Record" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

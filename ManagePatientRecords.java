@@ -241,7 +241,6 @@ public class ManagePatientRecords implements ActionListener {
         JDateChooser dateChooser = new JDateChooser();
         dateChooser.setBounds(100, 100, 250, 25);
         dateChooser.setDateFormatString("yyyyMMdd");
-//        String tempBirthday = ((JTextField)dateChooser.getDateEditor().getUiComponent()).getText();
         frame.getContentPane().add(dateChooser);
         panel.add(dateChooser);
 
@@ -994,60 +993,162 @@ public class ManagePatientRecords implements ActionListener {
 
         int line=searchRecord();
         String input;
-        int update=0;
+        final int[] update = {0};
+        final String[] newLine = {null};
 
         if(line==-1)
             editPatientRecord();
         else if(line==-2) {
-            System.out.println("No record found.");
-            do {
-                System.out.println("Would you like to try again or return to the main menu?");
-                System.out.println("[1] Edit another patient record");
-                System.out.println("[2] Return to the Main Menu");
-                System.out.print("Select a transaction: ");
-                input = scanner.next().toUpperCase();
+            frame.dispose();
 
-                if(!input.equals("1") && !input.equals("2")) {
-                    System.out.println("Invalid input format! Please try again");
+            frame = new JFrame();
+            panel = new JPanel();
+
+            frame.setSize(960, 540);
+            frame.setTitle("Edit Patient Records");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            panel.setLayout(new BorderLayout());
+
+            JLabel errorLabel = new JLabel("No record found.");
+            errorLabel.setBounds(10, 10, 250, 25);
+            errorLabel.setForeground(Color.RED);
+            panel.add(errorLabel);
+
+            JLabel editOrReturnLabel = new JLabel("Would you like to edit another patient record or return to the main menu?");
+            editOrReturnLabel.setBounds(10, 50, 250, 25);
+            panel.add(editOrReturnLabel);
+
+            JButton editButton = new JButton("Edit a Patient Record");
+            editButton.setBounds(10, 80, 80, 25);
+            editButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
                     editPatientRecord();
                 }
-            } while(!input.equals("1") && !input.equals("2"));
-            if(input.equals("1"))
-                editPatientRecord();
-            else
-                mm.mainMenu();
+            });
+            panel.add(editButton);
+
+            JButton returnButton = new JButton("Return to the Main Menu");
+            returnButton.setBounds(100, 80, 80, 25);
+            returnButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+                    mm.mainMenu();
+                }
+            });
+            panel.add(returnButton);
+
+            frame.add(panel);
+            frame.setVisible(true);
         } else {
-            do {
-                System.out.println("Would you like to update the patient's Address or Phone Number?");
-                System.out.println("[1] Address");
-                System.out.println("[2] Phone Number");
-                System.out.print("Select information to update: ");
-                input = scanner.next();
+            frame.dispose();
 
-                if(!input.equals("1") && !input.equals("2")) {
-                    System.out.println("Invalid input format! Please try again");
-                    editPatientRecord();
+            frame = new JFrame();
+            panel = new JPanel();
+
+            frame.setSize(960, 540);
+            frame.setTitle("Edit Patient Record");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+            panel.setLayout(boxLayout);
+            panel.setBorder(new EmptyBorder(new Insets(10, 10, 100, 10)));
+
+            JLabel updateLabel = new JLabel("Would you like to update the patient's Address or Phone Number?");
+            updateLabel.setBounds(10, 10, 500, 20);
+            panel.add(updateLabel);
+
+            JButton addressButton = new JButton("Address");
+            addressButton.setBounds(10,40, 100, 25);
+            addressButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+
+                    frame = new JFrame();
+                    panel = new JPanel();
+
+                    frame.setSize(960, 540);
+                    frame.setTitle("Edit Patient Record");
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                    BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+                    panel.setLayout(boxLayout);
+                    panel.setBorder(new EmptyBorder(new Insets(10, 10, 100, 10)));
+
+                    JLabel newAddressLabel = new JLabel("Enter the patient's new Address: ");
+                    newAddressLabel.setBounds(10, 10, 100, 20);
+                    panel.add(newAddressLabel);
+
+                    JTextField newAddress = new JTextField();
+                    newAddress.setBounds(110, 10, 100, 25);
+                    panel.add(newAddress);
+
+                    JButton updateButton = new JButton("UPDATE");
+                    updateButton.setBounds(10, 40, 80, 25);
+                    updateButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            newLine[0] = newAddress.getText();
+                            update[0] = 1;
+                        }
+                    });
+                    panel.add(updateButton);
+
+                    frame.add(panel);
+                    frame.setVisible(true);
                 }
-            } while(!input.equals("1") && !input.equals("2"));
-            System.out.println();
-            if(input.equals("1"))
-                update = 1;
-            else
-                update = 2;
+            });
+            panel.add(addressButton);
+
+            JButton phoneNoButton = new JButton("Phone Number");
+            phoneNoButton.setBounds(110, 40, 100, 25);
+            phoneNoButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+
+                    frame = new JFrame();
+                    panel = new JPanel();
+
+                    frame.setSize(960, 540);
+                    frame.setTitle("Edit Patient Record");
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                    BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+                    panel.setLayout(boxLayout);
+                    panel.setBorder(new EmptyBorder(new Insets(10, 10, 100, 10)));
+
+                    JLabel newPhoneNoLabel = new JLabel("Enter the patient's new Phone Number: ");
+                    newPhoneNoLabel.setBounds(10, 10, 100, 20);
+                    panel.add(newPhoneNoLabel);
+
+                    JTextField newPhoneNo = new JTextField();
+                    newPhoneNo.setBounds(110, 10, 100, 25);
+                    panel.add(newPhoneNo);
+
+                    JButton updateButton = new JButton("UPDATE");
+                    updateButton.setBounds(10, 40, 80, 25);
+                    updateButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            newLine[0] = newPhoneNo.getText();
+                        }
+                    });
+                    panel.add(updateButton);
+                }
+            });
+            panel.add(phoneNoButton);
+
+            frame.add(panel);
+            frame.setVisible(true);
         }
 
-        String newLine = "";
-        scanner.nextLine();
-        switch (update) {
-            case 1 -> {
-                System.out.print("Enter the patient's new Address: ");
-                newLine = scanner.nextLine();
-            }
-            case 2 -> {
-                System.out.print("Enter the patient's new Phone Number: ");
-                newLine = scanner.next();
-            }
-        }
+        int success;
+        String UID = null;
         String fileName = "Patients.txt";
         try {
             File file = new File(fileName);
@@ -1062,10 +1163,10 @@ public class ManagePatientRecords implements ActionListener {
             scannerFile.close();
 
             String[] splitLine = tempLine.split(";");
-            if(update==1)
-                splitLine[6] = newLine;
+            if (update[0] == 1)
+                splitLine[6] = newLine[0];
             else
-                splitLine[7] = newLine;
+                splitLine[7] = newLine[0];
 
             String line1 = String.join(";", splitLine);
             line1 = String.join("", line1, ";");
@@ -1075,23 +1176,68 @@ public class ManagePatientRecords implements ActionListener {
             fw.append(fileContents);
             fw.flush();
 
-            String UID = splitLine[0];
-            System.out.println("The Address/Phone Number of patient " + UID + " has been updated.");
+            UID = splitLine[0];
+            success = 1;
         } catch (IOException e) {
+            success = 0;
             System.out.println("Error occurred. Please try again.\n");
             editPatientRecord();
         }
 
-        do {
-            System.out.print("Do you want to edit another patient record? [Y/N]: ");
-            input = scanner.next().toUpperCase();
-            if(input.equals("Y"))
+        frame.dispose();
+
+        frame = new JFrame();
+        panel = new JPanel();
+
+        frame.setSize(960, 540);
+        frame.setTitle("Edit Patient Records");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        BoxLayout boxLayout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+        panel.setLayout(boxLayout);
+        panel.setBorder(new EmptyBorder(new Insets(10, 10, 100, 10)));
+
+        if (success == 1) {
+            String dialogue = "The Address/Phone Number of patient " + UID + " has been updated.";
+            JLabel messageDialogue = new JLabel(dialogue);
+            messageDialogue.setBounds(10, 10, 250, 25);
+            messageDialogue.setForeground(Color.BLUE);
+            panel.add(messageDialogue);
+        } else {
+            JLabel messageDialogue = new JLabel("Error occurred. Please try again.");
+            messageDialogue.setBounds(10, 10, 250, 25);
+            messageDialogue.setForeground(Color.RED);
+            panel.add(messageDialogue);
+        }
+
+        JLabel addOrReturnLabel = new JLabel("Would you like to edit another patient record or return to the main menu?");
+        addOrReturnLabel.setBounds(10, 50, 250, 25);
+        panel.add(addOrReturnLabel);
+
+        JButton editPatientRecordButton = new JButton("Edit Patient Record");
+        editPatientRecordButton.setBounds(10, 80, 80, 25);
+        editPatientRecordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
                 editPatientRecord();
-            else if(input.equals("N"))
+            }
+        });
+        panel.add(editPatientRecordButton);
+
+        JButton returnButton = new JButton("Return to the Main Menu");
+        returnButton.setBounds(100, 80, 80, 25);
+        returnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
                 mm.mainMenu();
-            else
-                System.out.println("Invalid input! Please enter a valid input.");
-        } while(!input.equals("Y") && !input.equals("N"));
+            }
+        });
+        panel.add(returnButton);
+
+        frame.add(panel);
+        frame.setVisible(true);
     }
 
 /*
@@ -1139,7 +1285,7 @@ public class ManagePatientRecords implements ActionListener {
                 count++;
         int finalCount = count;
 
-        int line = 0;
+        int line;
         int[] lines = new int[256];
 
         frame = new JFrame();

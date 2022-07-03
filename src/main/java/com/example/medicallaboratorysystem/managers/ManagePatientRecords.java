@@ -114,8 +114,8 @@ public class ManagePatientRecords {
             // go to new window to ask which patient UID then go to searchRecordConfirmUID()
         else if (searched == 1)
             return foundRecords;
-        else
-            return null;
+
+        return null;
     }
 
     public ArrayList<Patient> searchRecordConfirmUID(String id) {

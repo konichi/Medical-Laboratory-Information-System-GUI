@@ -111,11 +111,36 @@ public class ManagePatientRecords {
             } catch (NullPointerException ignored) {}
         }
         if (searched > 1);
-            // go to new method
+            // go to new window to ask which patient UID then go to searchRecordConfirmUID()
         else if (searched == 1)
             return foundRecords;
         else
             return null;
+    }
+
+    public ArrayList<Patient> searchRecordConfirmUID(String id) {
+        ArrayList<Patient> foundRecords = new ArrayList<>();
+        //TODO
+        //convert to id to uppercase
+        id = id.toUpperCase(Locale.ROOT);
+        //put logic of search record by UID
+        for (int i = 0; i < count; i++)
+            if(Objects.equals(patients[i][0], id) && !Objects.equals(patients[i][9], "D")) {
+                line = i;
+                String patientCodeIdentifier = patients[i][0];
+                String firstName = patients[i][1];
+                String lastName = patients[i][2];
+                String middleName = patients[i][3];
+                String birthday = patients[i][4];
+                String gender = patients[i][5];
+                String address = patients[i][6];
+                String phoneNo = patients[i][7];
+                long tempNationalID = Long.parseLong(patients[i][8]);
+                Patient foundRecord = new Patient(patientCodeIdentifier, lastName, firstName, middleName, birthday, gender, address, phoneNo, tempNationalID);
+                foundRecords.add(foundRecord);
+                return foundRecords;
+            }
+        return null;
     }
 
     public int deleteRecord(String reason) {

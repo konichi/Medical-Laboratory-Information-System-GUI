@@ -4,12 +4,21 @@ import com.example.medicallaboratorysystem.helpers.ReadFile;
 import com.example.medicallaboratorysystem.helpers.WriteToFile;
 import com.example.medicallaboratorysystem.models.Patient;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class ManagePatientRecords {
-    private ArrayList<Patient> patients;
+    //private ArrayList<Patient> patients;
     private final String FILENAME = "Patients.txt";
+    private int count = 0;
+    private String[][] patients;
 
     //private ManageLaboratoryRequest mlr;
     private WriteToFile wtf;
@@ -17,15 +26,148 @@ public class ManagePatientRecords {
 //    private MainMenu mm;
 
     public ManagePatientRecords() {
-        patients = new ArrayList<>();
+        //patients = new ArrayList<>();
         wtf = new WriteToFile();
+
+        //TODO: call readRecords() here to store the records in patients[][]
     }
 
     public int addPatient(Patient patient) {
-        patients.add(patient);
+        //patients.add(patient);
 
         int error = wtf.writeToPatients(FILENAME, patient);
         return error;
+    }
+
+    public ArrayList<Patient> searchRecordbyUID(String id) {
+        ArrayList<Patient> foundRecords = new ArrayList<>();
+        //TODO
+        //convert to id to uppercase
+        //put logic of search record by UID
+        //store in foundRecords
+        //return the foundRecords
+        //if record not found, just return null
+
+        return null;
+    }
+
+    public ArrayList<Patient> searchRecordbyNationalId(String id) {
+        ArrayList<Patient> foundRecords = new ArrayList<>();
+        //TODO
+        //convert to id to uppercase
+        //put logic of search record by nationalID
+        //store in foundRecords
+        //return the foundRecords
+        //if record not found, just return null
+
+        return null;
+    }
+
+    public ArrayList<Patient> searchRecord(String lastName, String firstName, String birthday) {
+        ArrayList<Patient> foundRecords = new ArrayList<>();
+        //TODO
+        //di ko alam kung anong data type yung sa bday HAHHAHA feel free to change the data type
+        //put logic of search record by lastName, firstName, and birthday
+        //return the foundRecords
+        //if record not found, just return null
+        return null;
+    }
+
+    public int deleteRecord(String reason) {
+        String D = "D;";
+        String newLine = String.join("", D, reason);
+
+        //TODO
+        //can u fix this? thanks :((
+//        try {
+//            File file = new File(FILENAME);
+//            Scanner scannerFile = new Scanner(file);
+//
+//            String tempLine = Files.readAllLines(Paths.get(FILENAME)).get(line);
+//            StringBuilder buffer = new StringBuilder();
+//            while (scannerFile.hasNextLine()) {
+//                buffer.append(scannerFile.nextLine()).append(System.lineSeparator());
+//            }
+//            String fileContents = buffer.toString();
+//            scannerFile.close();
+//
+//            String line1 = String.join("", tempLine, newLine, ";");
+//            fileContents = fileContents.replaceAll(tempLine, line1);
+//            FileWriter fw = new FileWriter(FILENAME);
+//            fw.append(fileContents);
+//            fw.flush();
+//
+//            String[] splitLine = tempLine.split(";");
+//            String UID = splitLine[0];
+//        } catch(IOException e) {
+//            System.out.println("Error occurred. Please try again.\n");
+//            return 1;
+//        }
+        return 0; //return 0 if successful
+    }
+
+    public int editRecord(int update, String value) {
+        //TODO
+        //can u fix this too? thanks :((
+//        try {
+//            File file = new File(FILENAME);
+//            Scanner scannerFile = new Scanner(file);
+//
+//            String tempLine = Files.readAllLines(Paths.get(FILENAME)).get(line);
+//            StringBuilder buffer = new StringBuilder();
+//            while(scannerFile.hasNextLine()) {
+//                buffer.append(scannerFile.nextLine()).append(System.lineSeparator());
+//            }
+//            String fileContents = buffer.toString();
+//            scannerFile.close();
+//
+//            String[] splitLine = tempLine.split(";");
+//            if(update==1)
+//                splitLine[6] = value;
+//            else
+//                splitLine[7] = value;
+//
+//            String line1 = String.join(";", splitLine);
+//            line1 = String.join("", line1, ";");
+//
+//            fileContents = fileContents.replaceAll(tempLine,line1);
+//            FileWriter fw = new FileWriter(FILENAME);
+//            fw.append(fileContents);
+//            fw.flush();
+//
+//            String UID = splitLine[0];
+//            System.out.println("The Address/Phone Number of patient " + UID + " has been updated.");
+//        } catch (IOException e) {
+//            System.out.println("Error occurred. Please try again.\n");
+//            return 1;
+//        }
+        return 0; //return 0 if successful
+    }
+
+
+    public void readRecords() {
+        // get all lines in Patients.txt and save to String[][] patients
+        String fileName = "Patients.txt";
+        int error = rf.readPatients(fileName);
+        if(error==1) {
+
+        }
+
+        patients = rf.getTempSearch();
+
+        // count total non-null entries in String[][] patients
+        for (String[] patient : patients) {
+            if (patient[0] != null) {
+                count++;
+            }
+        }
+
+
+        int searched = 0;
+        int[] lines = new int[256];
+        String searchLast = null;
+        String searchFirst = null;
+        String searchBirthday = null;
     }
 
     //    generates Patient UID

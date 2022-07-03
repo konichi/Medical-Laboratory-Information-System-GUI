@@ -9,15 +9,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class ManagePatientRecords {
     //private ArrayList<Patient> patients;
     private final String FILENAME = "Patients.txt";
     private int count = 0;
+    private int line = 0;
     private String[][] patients;
 
     //private ManageLaboratoryRequest mlr;
@@ -30,6 +28,7 @@ public class ManagePatientRecords {
         wtf = new WriteToFile();
 
         //TODO: call readRecords() here to store the records in patients[][]
+        readRecords();
     }
 
     public int addPatient(Patient patient) {
@@ -43,11 +42,24 @@ public class ManagePatientRecords {
         ArrayList<Patient> foundRecords = new ArrayList<>();
         //TODO
         //convert to id to uppercase
+        id = id.toUpperCase(Locale.ROOT);
         //put logic of search record by UID
-        //store in foundRecords
-        //return the foundRecords
-        //if record not found, just return null
-
+        for (int i = 0; i < count; i++)
+            if(Objects.equals(patients[i][0], id) && !Objects.equals(patients[i][9], "D")) {
+                line = i;
+                String patientCodeIdentifier = patients[i][0];
+                String firstName = patients[i][1];
+                String lastName = patients[i][2];
+                String middleName = patients[i][3];
+                String birthday = patients[i][4];
+                String gender = patients[i][5];
+                String address = patients[i][6];
+                String phoneNo = patients[i][7];
+                long tempNationalID = Long.parseLong(patients[i][8]);
+                Patient foundRecord = new Patient(patientCodeIdentifier, lastName, firstName, middleName, birthday, gender, address, phoneNo, tempNationalID);
+                foundRecords.add(foundRecord);
+                return foundRecords;
+            }
         return null;
     }
 
@@ -55,22 +67,53 @@ public class ManagePatientRecords {
         ArrayList<Patient> foundRecords = new ArrayList<>();
         //TODO
         //convert to id to uppercase
-        //put logic of search record by nationalID
-        //store in foundRecords
-        //return the foundRecords
-        //if record not found, just return null
-
+        id = id.toUpperCase(Locale.ROOT);
+        for (int i = 0; i < count; i++)
+            if (Objects.equals(patients[i][8], id) && !Objects.equals(patients[i][9], "D")) {
+                line = i;
+                String patientCodeIdentifier = patients[i][0];
+                String firstName = patients[i][1];
+                String lastName = patients[i][2];
+                String middleName = patients[i][3];
+                String birthday = patients[i][4];
+                String gender = patients[i][5];
+                String address = patients[i][6];
+                String phoneNo = patients[i][7];
+                long tempNationalID = Long.parseLong(patients[i][8]);
+                Patient foundRecord = new Patient(patientCodeIdentifier, lastName, firstName, middleName, birthday, gender, address, phoneNo, tempNationalID);
+                foundRecords.add(foundRecord);
+                return foundRecords;
+            }
         return null;
     }
 
     public ArrayList<Patient> searchRecord(String lastName, String firstName, String birthday) {
         ArrayList<Patient> foundRecords = new ArrayList<>();
         //TODO
-        //di ko alam kung anong data type yung sa bday HAHHAHA feel free to change the data type
         //put logic of search record by lastName, firstName, and birthday
-        //return the foundRecords
-        //if record not found, just return null
-        return null;
+        int searched = 0;
+        for (int i = 0; i < count; i++) {
+            try {
+                if (!Objects.equals(patients[i][9], "D") && patients[i][1].equalsIgnoreCase(lastName) && patients[i][2].equalsIgnoreCase(firstName) && patients[i][4].equalsIgnoreCase(birthday)) {
+                    String patientCodeIdentifier = patients[i][0];
+                    String firstName1 = patients[i][1];
+                    String lastName1 = patients[i][2];
+                    String middleName = patients[i][3];
+                    String birthday1 = patients[i][4];
+                    String gender = patients[i][5];
+                    String address = patients[i][6];
+                    String phoneNo = patients[i][7];
+                    long tempNationalID = Long.parseLong(patients[i][8]);
+                    Patient foundRecord = new Patient(patientCodeIdentifier, lastName1, firstName1, middleName, birthday1, gender, address, phoneNo, tempNationalID);
+                    foundRecords.add(foundRecord);
+                    searched++;
+                }
+            } catch (NullPointerException ignored) {}
+        }
+        if (searched == 0)
+            return null;
+        else
+            return foundRecords;
     }
 
     public int deleteRecord(String reason) {
@@ -78,69 +121,69 @@ public class ManagePatientRecords {
         String newLine = String.join("", D, reason);
 
         //TODO
-        //can u fix this? thanks :((
-//        try {
-//            File file = new File(FILENAME);
-//            Scanner scannerFile = new Scanner(file);
-//
-//            String tempLine = Files.readAllLines(Paths.get(FILENAME)).get(line);
-//            StringBuilder buffer = new StringBuilder();
-//            while (scannerFile.hasNextLine()) {
-//                buffer.append(scannerFile.nextLine()).append(System.lineSeparator());
-//            }
-//            String fileContents = buffer.toString();
-//            scannerFile.close();
-//
-//            String line1 = String.join("", tempLine, newLine, ";");
-//            fileContents = fileContents.replaceAll(tempLine, line1);
-//            FileWriter fw = new FileWriter(FILENAME);
-//            fw.append(fileContents);
-//            fw.flush();
-//
-//            String[] splitLine = tempLine.split(";");
-//            String UID = splitLine[0];
-//        } catch(IOException e) {
-//            System.out.println("Error occurred. Please try again.\n");
-//            return 1;
-//        }
+        try {
+            File file = new File(FILENAME);
+            Scanner scannerFile = new Scanner(file);
+
+            String tempLine = Files.readAllLines(Paths.get(FILENAME)).get(line);
+            StringBuilder buffer = new StringBuilder();
+            while (scannerFile.hasNextLine()) {
+                buffer.append(scannerFile.nextLine()).append(System.lineSeparator());
+            }
+            String fileContents = buffer.toString();
+            scannerFile.close();
+
+            String line1 = String.join("", tempLine, newLine, ";");
+            fileContents = fileContents.replaceAll(tempLine, line1);
+            FileWriter fw = new FileWriter(FILENAME);
+            fw.append(fileContents);
+            fw.flush();
+
+            String[] splitLine = tempLine.split(";");
+            String UID = splitLine[0];
+
+            System.out.println("Data of patient " + UID + " has been deleted.");
+        } catch(IOException e) {
+            System.out.println("Error occurred. Please try again.\n");
+            return 1;
+        }
         return 0; //return 0 if successful
     }
 
     public int editRecord(int update, String value) {
         //TODO
-        //can u fix this too? thanks :((
-//        try {
-//            File file = new File(FILENAME);
-//            Scanner scannerFile = new Scanner(file);
-//
-//            String tempLine = Files.readAllLines(Paths.get(FILENAME)).get(line);
-//            StringBuilder buffer = new StringBuilder();
-//            while(scannerFile.hasNextLine()) {
-//                buffer.append(scannerFile.nextLine()).append(System.lineSeparator());
-//            }
-//            String fileContents = buffer.toString();
-//            scannerFile.close();
-//
-//            String[] splitLine = tempLine.split(";");
-//            if(update==1)
-//                splitLine[6] = value;
-//            else
-//                splitLine[7] = value;
-//
-//            String line1 = String.join(";", splitLine);
-//            line1 = String.join("", line1, ";");
-//
-//            fileContents = fileContents.replaceAll(tempLine,line1);
-//            FileWriter fw = new FileWriter(FILENAME);
-//            fw.append(fileContents);
-//            fw.flush();
-//
-//            String UID = splitLine[0];
-//            System.out.println("The Address/Phone Number of patient " + UID + " has been updated.");
-//        } catch (IOException e) {
-//            System.out.println("Error occurred. Please try again.\n");
-//            return 1;
-//        }
+        try {
+            File file = new File(FILENAME);
+            Scanner scannerFile = new Scanner(file);
+
+            String tempLine = Files.readAllLines(Paths.get(FILENAME)).get(line);
+            StringBuilder buffer = new StringBuilder();
+            while(scannerFile.hasNextLine()) {
+                buffer.append(scannerFile.nextLine()).append(System.lineSeparator());
+            }
+            String fileContents = buffer.toString();
+            scannerFile.close();
+
+            String[] splitLine = tempLine.split(";");
+            if(update==1)
+                splitLine[6] = value;
+            else
+                splitLine[7] = value;
+
+            String line1 = String.join(";", splitLine);
+            line1 = String.join("", line1, ";");
+
+            fileContents = fileContents.replaceAll(tempLine,line1);
+            FileWriter fw = new FileWriter(FILENAME);
+            fw.append(fileContents);
+            fw.flush();
+
+            String UID = splitLine[0];
+            System.out.println("The Address/Phone Number of patient " + UID + " has been updated.");
+        } catch (IOException e) {
+            System.out.println("Error occurred. Please try again.\n");
+            return 1;
+        }
         return 0; //return 0 if successful
     }
 

@@ -2,53 +2,70 @@ package com.example.medicallaboratorysystem;
 
 import com.example.medicallaboratorysystem.managers.ManagePatientRecords;
 import com.example.medicallaboratorysystem.models.Patient;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AddNewPatientController {
+
+    //region Declarations
     ManagePatientRecords mpr = new ManagePatientRecords();
 
     @FXML
-    private TextField addressLabel;
+    private AnchorPane addPatientPane;
 
     @FXML
-    private TextField birthdayLabel;
+    private TextField addressField;
+
+    @FXML
+    private DatePicker birthdayPicker;
 
     @FXML
     private RadioButton femaleRadioButton;
 
     @FXML
-    private TextField firstNameLabel;
+    private TextField firstNameField;
 
     @FXML
-    private TextField idLabel;
+    private TextField idField;
 
     @FXML
-    private TextField lastNameLabel;
+    private TextField lastNameField;
 
     @FXML
     private RadioButton maleRadioButton;
 
     @FXML
-    private TextField middleNameLabel;
+    private TextField middleNameField;
 
     @FXML
-    private TextField phoneLabel;
+    private TextField phoneField;
+
+    @FXML
+    private Button saveButton;
+    //endregion
+
+    // TODO: INPUT VALIDATION
 
     @FXML
     void onSaveRecordClick(ActionEvent event) {
-        String firstName = firstNameLabel.getText();
-        String lastName = lastNameLabel.getText();
-        String middleName = middleNameLabel.getText();
-        String birthday = birthdayLabel.getText();
-        String address = addressLabel.getText();
-        String phoneNumber = phoneLabel.getText();
-        long nationalId = Long.parseLong(idLabel.getText());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String firstName = firstNameField.getText();
+        String lastName = lastNameField.getText();
+        String middleName = middleNameField.getText();
+        String birthday = birthdayPicker.getValue().format(formatter);
+        String gender = maleRadioButton.isSelected() ? maleRadioButton.getText() : femaleRadioButton.getText();
+        String address = addressField.getText();
+        String phoneNumber = phoneField.getText();
+        long nationalId = Long.parseLong(idField.getText());
 
-        String gender = "Male";
         String id = mpr.generateUID();
 
         int error = mpr.addPatient(
@@ -65,16 +82,67 @@ public class AddNewPatientController {
                         )
                     );
 
-        Alert a = new Alert(Alert.AlertType.NONE);
+        Alert alert = new Alert(
+                Alert.AlertType.NONE,
+                "Would you like to add another patient?",
+                ButtonType.YES,
+                ButtonType.NO
+                );
+        alert.setHeaderText("Patient record successfully added.");
+        alert.showAndWait();
 
         if(error == 1) {
-            a.setAlertType(Alert.AlertType.CONFIRMATION);
-            a.show();
+            alert.setHeaderText("Patient record not added.");
+            alert.showAndWait();
         }
         else {
-            a.setAlertType(Alert.AlertType.ERROR);
-            a.show();
+            alert.setHeaderText("Patient record successfully added.");
+            alert.showAndWait();
         }
+
+        if (alert.getResult() == ButtonType.YES) {
+            resetDisplay();
+        }
+        else {
+            closeWindow();
+        }
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) addPatientPane.getScene().getWindow();
+        stage.close();
+    }
+
+    private void resetDisplay() {
+        firstNameField.setText("");
+        lastNameField.setText("");
+        middleNameField.setText("");
+        birthdayPicker.setValue(LocalDate.now());
+        maleRadioButton.setSelected(true);
+        addressField.setText("");
+        phoneField.setText("");
+        idField.setText("");
+    }
+
+    @FXML
+    void initialize() {
+        ToggleGroup group = new ToggleGroup();
+        maleRadioButton.setToggleGroup(group);
+        femaleRadioButton.setToggleGroup(group);
+        maleRadioButton.setSelected(true);
+
+        saveButton.setDisable(false);
+
+//        if(!firstNameField.getText().isEmpty() &&
+//            !lastNameField.getText().isEmpty() &&
+//            !middleNameField.getText().isEmpty() &&
+//            !birthdayField.getText().isEmpty() &&
+//            !addressField.getText().isEmpty() &&
+//            !phoneField.getText().isEmpty() &&
+//            !idField.getText().isEmpty()) {
+//            System.out.println("hello");
+//            saveButton.setDisable(false);
+//        }
     }
 
 }

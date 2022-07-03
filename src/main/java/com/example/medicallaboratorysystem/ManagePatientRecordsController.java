@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -13,6 +15,7 @@ import java.util.ResourceBundle;
 
 public class ManagePatientRecordsController {
 
+    // TODO: Focus on current window only
     @FXML
     private ResourceBundle resources;
 
@@ -21,18 +24,7 @@ public class ManagePatientRecordsController {
 
     @FXML
     void onAddPatientClick(ActionEvent event) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("add-new-patient.fxml"));
-            Parent root = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.initModality(Modality.WINDOW_MODAL);
-//            stage.initOwner(pane.getScene().getWindow());
-            stage.setScene(new Scene(root));
-            stage.show();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        openWindow("add-new-patient.fxml");
     }
 
     @FXML
@@ -47,12 +39,51 @@ public class ManagePatientRecordsController {
 
     @FXML
     void onSearchPatientRecordClick(ActionEvent event) {
+        Alert alert = new Alert(
+                Alert.AlertType.NONE,
+                "Do you know the patient's UID?",
+                ButtonType.YES,
+                ButtonType.NO
+        );
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+//            resetDisplay();
+        }
+        else {
+            alert.setContentText("Do you know the patient's National ID no.?");
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.YES) {
+
+            }
+
+            else {
+                openWindow("search-patient-record.fxml");
+            }
+        }
+
 
     }
 
     @FXML
     void initialize() {
 
+    }
+
+    void openWindow(String fileName) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fileName));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+//            stage.initOwner(pane.getScene().getWindow());
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

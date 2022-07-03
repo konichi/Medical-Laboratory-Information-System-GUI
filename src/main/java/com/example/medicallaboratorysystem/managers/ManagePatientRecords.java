@@ -110,10 +110,12 @@ public class ManagePatientRecords {
                 }
             } catch (NullPointerException ignored) {}
         }
-        if (searched == 0)
-            return null;
-        else
+        if (searched > 1);
+            // go to new method
+        else if (searched == 1)
             return foundRecords;
+        else
+            return null;
     }
 
     public int deleteRecord(String reason) {
